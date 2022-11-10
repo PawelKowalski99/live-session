@@ -7,7 +7,7 @@
 ```
 /db/schema.sql
 ```
-- Change the enverioment variables located in .env.development
+- Change the environment variables located in .env.development
 ```bash
 DB_ENGINE = "postgres or mysql"
 DB_HOST = "host"
@@ -44,6 +44,10 @@ For unit tests, simply
 ```bash
 make unit-test
 ```
+or
+```bash
+go test ./...
+```
 
 ⚠️For integration tests, first need configure the **.env.test** vars adding the database test connection, after, simply
 ```bash
@@ -72,9 +76,7 @@ make test
 │       └── tests            # Unit tests for helpers 
 └── /server                  # The server listener and endpoints of API REST
 ```
- 
 
+## Generating Schemas and queries
 
- docker run --rm -v C:\Users\pawel\go\src\github.com\PawelKowalski99\real-estate\core\infrastructure\storage:/src -w /src kjconroy/sqlc generate
-
- docker run --rm -v C:\Users\pawel\go\src\github.com\PawelKowalski99\live-session-task\:/src -w /src kjconroy/sqlc generate
+ ```docker run --rm -v C:\Users\pawel\go\src\github.com\PawelKowalski99\live-session-task\:/src -w /src kjconroy/sqlc generate```

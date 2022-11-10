@@ -3,6 +3,7 @@ package user_test
 import (
 	"context"
 	"github.com/jellydator/ttlcache/v3"
+	"github.com/labstack/gommon/log"
 	"github.com/stretchr/testify/assert"
 	"live-session-task/core/entities"
 	"live-session-task/core/infrastructure/user"
@@ -47,6 +48,7 @@ func (m *cacheMock) Set(ctx context.Context, id, name string) error {
 	defer m.mu.Unlock()
 
 	m.cache.Set(id, name, ttlcache.DefaultTTL)
+	log.Info("Set user in cache")
 
 	return nil
 }
@@ -57,12 +59,10 @@ func (m *dbMock) CreateUser(ctx context.Context, name string) (entities.User, er
 
 func (m *dbMock) GetUser(ctx context.Context, id int32) (entities.User, error) {
 	m.mu.Lock()
-	// Dummy sleeper because db is slower than cache.
-	time.Sleep(800 * time.Millisecond)
-
 	defer m.mu.Unlock()
 
 	usr := m.users[int(id)]
+	log.Info("Got user from DB")
 
 	return entities.User{
 		ID:   int(id),
@@ -71,7 +71,16 @@ func (m *dbMock) GetUser(ctx context.Context, id int32) (entities.User, error) {
 }
 
 func TestLogic_GetUser(t *testing.T) {
-	var lc = user.NewLogic(&dbMock{
+	log.SetLevel(log.INFO)
+
+	c := ttlcache.New[string, string](
+		ttlcache.WithTTL[string, string](2000*time.Millisecond),
+		ttlcache.WithDisableTouchOnHit[string, string](),
+	)
+
+	go c.Start()
+
+	lc := user.NewLogic(&dbMock{
 		users: map[int]User{
 			0: {Name: "a"},
 			1: {Name: "b"},
@@ -82,9 +91,8 @@ func TestLogic_GetUser(t *testing.T) {
 		},
 		mu: &sync.Mutex{},
 	}, &cacheMock{
-		cache: ttlcache.New[string, string](
-			ttlcache.WithTTL[string, string](2 * time.Second)),
-		mu: &sync.Mutex{},
+		cache: c,
+		mu:    &sync.Mutex{},
 	})
 
 	type Out struct {
@@ -100,17 +108,7 @@ func TestLogic_GetUser(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "0",
-			in:   0,
-			out: Out{
-				user:   entities.User{ID: 0, Name: "a"},
-				err:    nil,
-				status: http.StatusOK,
-			},
-			wantErr: false,
-		},
-		{
-			name: "0 from cache",
+			name: "TC 0",
 			in:   0,
 			out: Out{
 				user:   entities.User{ID: 0, Name: "a"},
@@ -121,16 +119,21 @@ func TestLogic_GetUser(t *testing.T) {
 		},
 	}
 
-	for _, tc := range cases {
-		userRsp, err, status := lc.GetUser(tc.in)
-		if err != nil && !tc.wantErr {
+	for i := 0; i < 10; i++ {
+		time.Sleep(400 * time.Millisecond)
+
+		for _, tc := range cases {
+			userRsp, err, status := lc.GetUser(tc.in)
+			if err != nil && !tc.wantErr {
+
+			}
+
+			assert.Equal(t, tc.out.user, userRsp)
+			assert.Equal(t, tc.out.status, status)
 
 		}
-
-		assert.Equal(t, tc.out.user, userRsp)
-		assert.Equal(t, tc.out.status, status)
-
 	}
+
 }
 
 func BenchmarkLogic_GetUser(b *testing.B) {
@@ -146,12 +149,16 @@ func BenchmarkLogic_GetUser(b *testing.B) {
 		mu: &sync.Mutex{},
 	}, &cacheMock{
 		cache: ttlcache.New[string, string](
-			ttlcache.WithTTL[string, string](1 * time.Second)),
+			ttlcache.WithTTL[string, string](400 * time.Second)),
 		mu: &sync.Mutex{},
 	})
 
 	for i := 0; i < b.N; i++ {
 		lc.GetUser(0)
-
+		//lc.GetUser(1)
+		//lc.GetUser(2)
+		//lc.GetUser(3)
+		//lc.GetUser(4)
+		//lc.GetUser(5)
 	}
 }

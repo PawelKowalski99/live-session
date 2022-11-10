@@ -22,19 +22,10 @@ compile-win:
 
 compile:
 	go build -o bin/real-estate -v
-	
-# Heroku
-heroku-local:
-	cp .env.development bin/.env.development
-	heroku local
 
-heroku-run: compile heroku-local
-
-heroku-run-win: compile-win heroku-local
 
 # Testing
 unit-test:
-	go test ./internal/helpers/tests
 	go test ./core/application/...
 
 integration-test:
