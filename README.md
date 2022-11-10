@@ -1,31 +1,52 @@
-# Real estate analyzer - server
+# Livesession - task
 
 
-⚠️ Now, the system need connect to a database, by default you can use Postgres or CockroachDB
-- Just create a database
-- Upload the schema on your DB
-```
-/db/schema.sql
-```
-- Change the environment variables located in .env.development
-```bash
-DB_ENGINE = "postgres or mysql"
-DB_HOST = "host"
-DB_PORT = 1234
-DB_DATABASE = "db name"
-DB_USERNAME = "user name"
-DB_PASSWORD = "your secret password"
+[//]: # (⚠️ Now, the system need connect to a database, by default you can use Postgres or CockroachDB)
 
-# For cockroach
-DB_OPTIONS = "--cluster=cockroach-cluser-id"
+[//]: # (- Just create a database)
 
-# For postgres
-DB_OPTIONS = "sslmode=disable timezone=UTC connect_timeout=5"
+[//]: # (- Upload the schema on your DB)
 
-# For mysql
-DB_OPTIONS = ""
-```
-<br />
+[//]: # (```)
+
+[//]: # (/db/schema.sql)
+
+[//]: # (```)
+
+[//]: # (- Change the environment variables located in .env.development)
+
+[//]: # (```bash)
+
+[//]: # (DB_ENGINE = "postgres or mysql")
+
+[//]: # (DB_HOST = "host")
+
+[//]: # (DB_PORT = 1234)
+
+[//]: # (DB_DATABASE = "db name")
+
+[//]: # (DB_USERNAME = "user name")
+
+[//]: # (DB_PASSWORD = "your secret password")
+
+[//]: # ()
+[//]: # (# For cockroach)
+
+[//]: # (DB_OPTIONS = "--cluster=cockroach-cluser-id")
+
+[//]: # ()
+[//]: # (# For postgres)
+
+[//]: # (DB_OPTIONS = "sslmode=disable timezone=UTC connect_timeout=5")
+
+[//]: # ()
+[//]: # (# For mysql)
+
+[//]: # (DB_OPTIONS = "")
+
+[//]: # (```)
+
+[//]: # (<br />)
 
 ## ✅ Run
 If you want run, simply
