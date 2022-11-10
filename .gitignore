@@ -1,0 +1,6 @@
+/bin
+/logs
+/.vscode
+.idea
+db-data/
+redis_data/

@@ -1,0 +1,9 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "migrations/user/01_user_query.sql"
+    schema:  "migrations/user/01_user_schema.sql"
+    gen:
+      go:
+        package: "user"
+        out: "core/infrastructure/storage/user"
