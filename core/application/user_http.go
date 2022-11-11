@@ -20,6 +20,18 @@ type UserHttpService struct {
 	gtw user.Gateway
 }
 
+// Get godoc
+// @Summary Get the user.
+// @Description Get the user by id.
+// @Tags root
+// @Accept */*
+// @Produce json
+// @Param  id  query string  true  "id"
+// @Success 200 {object} entities.User{}
+// @Failure      400  {int}  http.StatusBadRequest
+// @Failure      404  {int}  http.StatusNotFound
+// @Failure      500  {int}  http.StatusInternalServerError
+// @Router /users [get]
 func (t *UserHttpService) Get(c echo.Context) (err error) {
 
 	id, err := strconv.Atoi(c.QueryParam("id"))

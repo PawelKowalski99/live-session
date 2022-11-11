@@ -61,6 +61,9 @@ func (m *dbMock) GetUser(ctx context.Context, id int32) (entities.User, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
+	// Dummy sleeper because database is slower than cache.
+	time.Sleep(100 * time.Millisecond)
+
 	usr := m.users[int(id)]
 	log.Info("Got user from DB")
 
@@ -149,7 +152,7 @@ func BenchmarkLogic_GetUser(b *testing.B) {
 		mu: &sync.Mutex{},
 	}, &cacheMock{
 		cache: ttlcache.New[string, string](
-			ttlcache.WithTTL[string, string](400 * time.Second)),
+			ttlcache.WithTTL[string, string](2 * time.Second)),
 		mu: &sync.Mutex{},
 	})
 
