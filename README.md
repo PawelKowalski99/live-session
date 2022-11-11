@@ -101,3 +101,13 @@ make test
 ## Generating Schemas and queries
 
  ```docker run --rm -v C:\Users\pawel\go\src\github.com\PawelKowalski99\live-session-task\:/src -w /src kjconroy/sqlc generate```
+ 
+## Usage of swagger
+
+### Generating swagger docs
+```bash
+swag init
+```
+
+### Swagger access
+Swagger is available under ``localhost:8080/swagger/``
